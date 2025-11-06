@@ -1,9 +1,9 @@
 # nupidmesktopai
-NUPI - Powerful AI Assistant for iOS
+NUPI - Powerful AI Assistant for iOS and macOS
 
-## iOS App
+## Universal App
 
-NUPI is a comprehensive AI assistant app for iOS, built with SwiftUI. Like advanced AI assistants such as GitHub Copilot, NUPI provides powerful capabilities to help with coding, research, analysis, learning, and creative tasks.
+NUPI is a comprehensive AI assistant app that runs natively on both iOS and macOS, built with SwiftUI. Like advanced AI assistants such as GitHub Copilot, NUPI provides powerful capabilities to help with coding, research, analysis, learning, and creative tasks.
 
 ### Key Features
 
@@ -62,15 +62,30 @@ NUPIApp/
 
 ### Requirements
 
-- iOS 17.0 or later
-- Xcode 15.0 or later
-- Swift 5.0 or later
+- **iOS**: iOS 17.0 or later
+- **macOS**: macOS 14.0 (Sonoma) or later
+- **Xcode**: 15.0 or later (for building)
+- **Swift**: 5.0 or later
 
 ### Building the App
 
+#### For iOS:
 1. Open `NUPIApp/NUPIApp.xcodeproj` in Xcode
-2. Select your target device or simulator
+2. Select your iOS device or simulator
 3. Press Cmd+R to build and run
+
+#### For macOS:
+1. Use the automated build script:
+   ```bash
+   ./build_macos.sh
+   ```
+
+2. Or open in Xcode:
+   - Open `NUPIApp/NUPIApp.xcodeproj`
+   - Select "My Mac" as the destination
+   - Press Cmd+R to build and run
+
+For detailed macOS installation instructions, see [INSTALL_MACOS.md](INSTALL_MACOS.md).
 
 ### Features in Detail
 
@@ -105,9 +120,11 @@ The app uses the iOS standard app icon format. You can add custom app icons by r
 ### Future Enhancements
 
 Potential future features:
-- Integration with external AI APIs
+- Integration with external AI APIs (OpenAI, Anthropic, etc.)
 - Code syntax highlighting
 - Voice input support
 - Export conversations
 - Cloud sync across devices
 - Custom AI model selection
+- Markdown rendering
+- File attachments

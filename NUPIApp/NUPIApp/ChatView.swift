@@ -65,7 +65,11 @@ struct ChatView: View {
                     }
                     .padding()
                 }
+                #if os(iOS)
                 .background(Color(uiColor: .systemBackground))
+                #else
+                .background(Color(nsColor: .windowBackgroundColor))
+                #endif
             }
             .navigationTitle(conversationManager.currentConversation?.title ?? "NUPI")
             .navigationBarTitleDisplayMode(.inline)

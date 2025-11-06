@@ -72,6 +72,7 @@ struct ChatView: View {
                 #endif
             }
             .navigationTitle(conversationManager.currentConversation?.title ?? "NUPI")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -86,6 +87,21 @@ struct ChatView: View {
                     }
                 }
             }
+            #else
+            .toolbar {
+                ToolbarItem(placement: .navigation) {
+                    Button(action: { showingSidebar = true }) {
+                        Image(systemName: "line.3.horizontal")
+                    }
+                }
+                
+                ToolbarItem(placement: .automatic) {
+                    Button(action: newConversation) {
+                        Image(systemName: "square.and.pencil")
+                    }
+                }
+            }
+            #endif
             .sheet(isPresented: $showingSidebar) {
                 ConversationListView()
                     .environmentObject(conversationManager)

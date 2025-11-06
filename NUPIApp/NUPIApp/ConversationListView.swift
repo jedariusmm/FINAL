@@ -25,14 +25,25 @@ struct ConversationListView: View {
                 .onDelete(perform: deleteConversations)
             }
             .navigationTitle("Conversations")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
+                #if os(iOS)
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Done") {
                         dismiss()
                     }
                 }
+                #else
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+                #endif
                 
+                #if os(iOS)
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         conversationManager.createNewConversation()
@@ -41,6 +52,16 @@ struct ConversationListView: View {
                         Image(systemName: "plus")
                     }
                 }
+                #else
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        conversationManager.createNewConversation()
+                        dismiss()
+                    }) {
+                        Image(systemName: "plus")
+                    }
+                }
+                #endif
             }
         }
     }

@@ -15,12 +15,23 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     private let inputTextField = UITextField()
     private let sendButton = UIButton(type: .system)
     private var messages: [NUPIAIService.Message] = []
+    private var inputBottomConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Chat with NUPI"
-        view.backgroundColor = .systemBackground
+        title = "NUPI"
         
+        // Modern gradient background
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = view.bounds
+        gradientLayer.colors = [
+            UIColor.systemBackground.cgColor,
+            UIColor.systemGray6.withAlphaComponent(0.3).cgColor
+        ]
+        gradientLayer.locations = [0.0, 1.0]
+        view.layer.insertSublayer(gradientLayer, at: 0)
+        
+        setupModernNavigationBar()
         setupUI()
         loadMessages()
         
@@ -29,36 +40,92 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
+    private func setupModernNavigationBar() {
+        // Modern navigation bar styling
+        navigationController?.navigationBar.prefersLargeTitles = false
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .systemBackground
+        appearance.titleTextAttributes = [
+            .font: UIFont.systemFont(ofSize: 18, weight: .semibold),
+            .foregroundColor: UIColor.label
+        ]
+        appearance.shadowColor = .clear
+        
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        
+        // Modern bar button items
+        let clearButton = UIBarButtonItem(
+            image: UIImage(systemName: "arrow.counterclockwise"),
+            style: .plain,
+            target: self,
+            action: #selector(clearChat)
+        )
+        clearButton.tintColor = .systemBlue
+        navigationItem.rightBarButtonItem = clearButton
+        
+        let closeButton = UIBarButtonItem(
+            image: UIImage(systemName: "xmark.circle.fill"),
+            style: .plain,
+            target: self,
+            action: #selector(dismissChat)
+        )
+        closeButton.tintColor = .systemGray
+        navigationItem.leftBarButtonItem = closeButton
+    }
+    
+    @objc private func dismissChat() {
+        dismiss(animated: true)
+    }
+    
     private func setupUI() {
-        // Table view setup
+        // Table view setup with modern styling
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .none
+        tableView.backgroundColor = .clear
         tableView.register(ChatMessageCell.self, forCellReuseIdentifier: "ChatCell")
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.contentInset = UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 0)
         view.addSubview(tableView)
         
-        // Input container setup
-        inputContainerView.backgroundColor = .systemGray6
+        // Modern input container with shadow
+        inputContainerView.backgroundColor = .systemBackground
+        inputContainerView.layer.shadowColor = UIColor.black.cgColor
+        inputContainerView.layer.shadowOffset = CGSize(width: 0, height: -2)
+        inputContainerView.layer.shadowOpacity = 0.1
+        inputContainerView.layer.shadowRadius = 8
         inputContainerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(inputContainerView)
         
-        // Input text field setup
-        inputTextField.placeholder = "Type a message..."
-        inputTextField.borderStyle = .roundedRect
-        inputTextField.backgroundColor = .systemBackground
+        // Modern text field with custom styling
+        inputTextField.placeholder = "Message NUPI..."
+        inputTextField.font = UIFont.systemFont(ofSize: 16)
+        inputTextField.backgroundColor = .systemGray6
+        inputTextField.layer.cornerRadius = 20
+        inputTextField.layer.masksToBounds = true
+        inputTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 40))
+        inputTextField.leftViewMode = .always
+        inputTextField.rightView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 40))
+        inputTextField.rightViewMode = .always
         inputTextField.delegate = self
         inputTextField.translatesAutoresizingMaskIntoConstraints = false
         inputContainerView.addSubview(inputTextField)
         
-        // Send button setup
-        sendButton.setTitle("Send", for: .normal)
-        sendButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        // Modern send button with icon
+        sendButton.setImage(UIImage(systemName: "arrow.up.circle.fill"), for: .normal)
+        sendButton.tintColor = .systemBlue
+        sendButton.contentVerticalAlignment = .fill
+        sendButton.contentHorizontalAlignment = .fill
         sendButton.addTarget(self, action: #selector(sendMessage), for: .touchUpInside)
         sendButton.translatesAutoresizingMaskIntoConstraints = false
         inputContainerView.addSubview(sendButton)
         
         // Constraints
+        inputBottomConstraint = inputContainerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -67,21 +134,19 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             inputContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             inputContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            inputContainerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            inputContainerView.heightAnchor.constraint(equalToConstant: 60),
+            inputBottomConstraint,
+            inputContainerView.heightAnchor.constraint(equalToConstant: 70),
             
-            inputTextField.leadingAnchor.constraint(equalTo: inputContainerView.leadingAnchor, constant: 12),
+            inputTextField.leadingAnchor.constraint(equalTo: inputContainerView.leadingAnchor, constant: 16),
             inputTextField.centerYAnchor.constraint(equalTo: inputContainerView.centerYAnchor),
             inputTextField.trailingAnchor.constraint(equalTo: sendButton.leadingAnchor, constant: -12),
             inputTextField.heightAnchor.constraint(equalToConstant: 40),
             
-            sendButton.trailingAnchor.constraint(equalTo: inputContainerView.trailingAnchor, constant: -12),
+            sendButton.trailingAnchor.constraint(equalTo: inputContainerView.trailingAnchor, constant: -16),
             sendButton.centerYAnchor.constraint(equalTo: inputContainerView.centerYAnchor),
-            sendButton.widthAnchor.constraint(equalToConstant: 60)
+            sendButton.widthAnchor.constraint(equalToConstant: 36),
+            sendButton.heightAnchor.constraint(equalToConstant: 36)
         ])
-        
-        // Navigation bar button
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Clear", style: .plain, target: self, action: #selector(clearChat))
     }
     
     private func loadMessages() {
@@ -143,15 +208,17 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     @objc private func keyboardWillShow(_ notification: Notification) {
         if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
             let keyboardHeight = keyboardFrame.height - view.safeAreaInsets.bottom
+            inputBottomConstraint.constant = -keyboardHeight
             UIView.animate(withDuration: 0.3) {
-                self.view.frame.origin.y = -keyboardHeight
+                self.view.layoutIfNeeded()
             }
         }
     }
     
     @objc private func keyboardWillHide(_ notification: Notification) {
+        inputBottomConstraint.constant = 0
         UIView.animate(withDuration: 0.3) {
-            self.view.frame.origin.y = 0
+            self.view.layoutIfNeeded()
         }
     }
     
@@ -179,6 +246,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
 class ChatMessageCell: UITableViewCell {
     private let bubbleView = UIView()
     private let messageLabel = UILabel()
+    private let timeLabel = UILabel()
+    private var bubbleLeadingConstraint: NSLayoutConstraint?
+    private var bubbleTrailingConstraint: NSLayoutConstraint?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -193,51 +263,76 @@ class ChatMessageCell: UITableViewCell {
         selectionStyle = .none
         backgroundColor = .clear
         
-        bubbleView.layer.cornerRadius = 16
+        // Modern bubble with shadow
+        bubbleView.layer.cornerRadius = 20
+        bubbleView.layer.shadowColor = UIColor.black.cgColor
+        bubbleView.layer.shadowOffset = CGSize(width: 0, height: 1)
+        bubbleView.layer.shadowOpacity = 0.1
+        bubbleView.layer.shadowRadius = 4
         bubbleView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(bubbleView)
         
+        // Modern message label
         messageLabel.numberOfLines = 0
-        messageLabel.font = UIFont.systemFont(ofSize: 16)
+        messageLabel.font = UIFont.systemFont(ofSize: 16, weight: .regular)
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
         bubbleView.addSubview(messageLabel)
         
+        // Time label for sophistication
+        timeLabel.font = UIFont.systemFont(ofSize: 11, weight: .regular)
+        timeLabel.textColor = .secondaryLabel
+        timeLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(timeLabel)
+        
         NSLayoutConstraint.activate([
-            messageLabel.topAnchor.constraint(equalTo: bubbleView.topAnchor, constant: 12),
-            messageLabel.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -12),
-            messageLabel.leadingAnchor.constraint(equalTo: bubbleView.leadingAnchor, constant: 12),
-            messageLabel.trailingAnchor.constraint(equalTo: bubbleView.trailingAnchor, constant: -12),
+            messageLabel.topAnchor.constraint(equalTo: bubbleView.topAnchor, constant: 14),
+            messageLabel.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -14),
+            messageLabel.leadingAnchor.constraint(equalTo: bubbleView.leadingAnchor, constant: 16),
+            messageLabel.trailingAnchor.constraint(equalTo: bubbleView.trailingAnchor, constant: -16),
             
-            bubbleView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
-            bubbleView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4)
+            bubbleView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 6),
+            bubbleView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -6),
+            
+            timeLabel.topAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: 4),
+            timeLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -2)
         ])
     }
     
     func configure(with message: NUPIAIService.Message) {
         messageLabel.text = message.content
         
-        // Remove previous constraints
-        bubbleView.constraints.forEach { constraint in
-            if constraint.firstAttribute == .leading || constraint.firstAttribute == .trailing {
-                constraint.isActive = false
-            }
-        }
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        timeLabel.text = formatter.string(from: message.timestamp)
+        
+        // Remove old constraints
+        bubbleLeadingConstraint?.isActive = false
+        bubbleTrailingConstraint?.isActive = false
         
         if message.role == "user" {
+            // Modern blue gradient for user messages
             bubbleView.backgroundColor = .systemBlue
             messageLabel.textColor = .white
-            NSLayoutConstraint.activate([
-                bubbleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
-                bubbleView.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor, constant: 60)
-            ])
+            timeLabel.textAlignment = .right
+            
+            bubbleTrailingConstraint = bubbleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
+            bubbleLeadingConstraint = bubbleView.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor, constant: 80)
+            
+            timeLabel.trailingAnchor.constraint(equalTo: bubbleView.trailingAnchor).isActive = true
         } else {
+            // Sophisticated gray for AI messages
             bubbleView.backgroundColor = .systemGray5
             messageLabel.textColor = .label
-            NSLayoutConstraint.activate([
-                bubbleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
-                bubbleView.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -60)
-            ])
+            timeLabel.textAlignment = .left
+            
+            bubbleLeadingConstraint = bubbleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16)
+            bubbleTrailingConstraint = bubbleView.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -80)
+            
+            timeLabel.leadingAnchor.constraint(equalTo: bubbleView.leadingAnchor).isActive = true
         }
+        
+        bubbleLeadingConstraint?.isActive = true
+        bubbleTrailingConstraint?.isActive = true
     }
 }
 

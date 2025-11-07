@@ -8,269 +8,278 @@
 #if canImport(UIKit)
 import UIKit
 typealias PlatformViewController = UIViewController
-typealias PlatformLabel = UILabel
-typealias PlatformButton = UIButton
-typealias PlatformTextField = UITextField
-typealias PlatformColor = UIColor
-typealias PlatformFont = UIFont
 #elseif canImport(AppKit)
 import AppKit
 typealias PlatformViewController = NSViewController
-typealias PlatformLabel = NSTextField
-typealias PlatformButton = NSButton
-typealias PlatformTextField = NSTextField
-typealias PlatformColor = NSColor
-typealias PlatformFont = NSFont
 #endif
 
 class ViewController: PlatformViewController {
     
-    private let titleLabel: PlatformLabel = {
-        #if canImport(UIKit)
+    #if canImport(UIKit)
+    // Modern UI components
+    private let scrollView = UIScrollView()
+    private let contentView = UIView()
+    
+    private let logoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = .systemBlue
+        imageView.image = UIImage(systemName: "brain.head.profile")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "NUPI AI Assistant"
-        label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
+        label.text = "NUPI AI"
+        label.font = UIFont.systemFont(ofSize: 36, weight: .bold)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
-        #else
-        let label = NSTextField(labelWithString: "NUPI AI Assistant")
-        label.font = NSFont.systemFont(ofSize: 32, weight: .bold)
-        label.alignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-        #endif
     }()
     
-    private let subtitleLabel: PlatformLabel = {
-        #if canImport(UIKit)
+    private let subtitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Welcome to NUPI"
-        label.font = UIFont.systemFont(ofSize: 18, weight: .regular)
-        label.textColor = .systemGray
+        label.text = "Your Intelligent Companion"
+        label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        label.textColor = .secondaryLabel
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
-        #else
-        let label = NSTextField(labelWithString: "Welcome to NUPI")
-        label.font = NSFont.systemFont(ofSize: 18, weight: .regular)
-        label.textColor = .systemGray
-        label.alignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-        #endif
     }()
     
-    private let descriptionLabel: PlatformLabel = {
-        #if canImport(UIKit)
+    private let descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "Your AI Assistant for iOS & macOS"
-        label.font = UIFont.systemFont(ofSize: 16, weight: .light)
-        label.textColor = .systemGray2
+        label.text = "Powered by advanced AI"
+        label.font = UIFont.systemFont(ofSize: 14, weight: .light)
+        label.textColor = .tertiaryLabel
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let statusContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .systemGray6
+        view.layer.cornerRadius = 16
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let statusIconLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 28)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let statusLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 15, weight: .medium)
         label.textAlignment = .center
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
-        #else
-        let label = NSTextField(labelWithString: "Your AI Assistant for iOS & macOS")
-        label.font = NSFont.systemFont(ofSize: 16, weight: .light)
-        label.textColor = .systemGray
-        label.alignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-        #endif
     }()
     
-    private let statusLabel: PlatformLabel = {
-        #if canImport(UIKit)
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-        #else
-        let label = NSTextField(labelWithString: "")
-        label.font = NSFont.systemFont(ofSize: 14, weight: .regular)
-        label.alignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-        #endif
-    }()
-    
-    private let chatButton: PlatformButton = {
-        #if canImport(UIKit)
+    private let chatButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("💬 Start Chat with NUPI", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        button.setTitle("Start Conversation", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         button.backgroundColor = .systemBlue
         button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 16
+        button.layer.shadowColor = UIColor.systemBlue.cgColor
+        button.layer.shadowOffset = CGSize(width: 0, height: 4)
+        button.layer.shadowOpacity = 0.3
+        button.layer.shadowRadius = 8
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private let configureButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("⚙️ Configure API Key", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        button.setTitleColor(.systemBlue, for: .normal)
+        button.backgroundColor = .systemGray6
         button.layer.cornerRadius = 12
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
-        #else
-        let button = NSButton()
-        button.title = "💬 Start Chat with NUPI"
-        button.bezelStyle = .rounded
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-        #endif
     }()
     
-    private let configureButton: PlatformButton = {
-        #if canImport(UIKit)
-        let button = UIButton(type: .system)
-        button.setTitle("Configure API Key", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-        #else
-        let button = NSButton()
-        button.title = "Configure API Key"
-        button.bezelStyle = .rounded
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-        #endif
-    }()
-
-    #if canImport(UIKit)
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "NUPI AI Assistant"
-        view.backgroundColor = .systemBackground
+        title = "NUPI"
+        
+        // Modern gradient background
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = view.bounds
+        gradientLayer.colors = [
+            UIColor.systemBackground.cgColor,
+            UIColor.systemGray6.withAlphaComponent(0.3).cgColor
+        ]
+        gradientLayer.locations = [0.0, 1.0]
+        view.layer.insertSublayer(gradientLayer, at: 0)
+        
         setupUI()
         updateAPIStatus()
+        
         chatButton.addTarget(self, action: #selector(openChat), for: .touchUpInside)
         configureButton.addTarget(self, action: #selector(configureAPIKey), for: .touchUpInside)
     }
-    #else
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.wantsLayer = true
-        view.layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
-        setupUI()
-        updateAPIStatus()
-        chatButton.target = self
-        chatButton.action = #selector(openChat)
-        configureButton.target = self
-        configureButton.action = #selector(configureAPIKey)
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // Update gradient frame
+        if let gradientLayer = view.layer.sublayers?.first as? CAGradientLayer {
+            gradientLayer.frame = view.bounds
+        }
     }
-    #endif
     
     private func setupUI() {
-        view.addSubview(titleLabel)
-        view.addSubview(subtitleLabel)
-        view.addSubview(descriptionLabel)
-        view.addSubview(statusLabel)
-        view.addSubview(chatButton)
-        view.addSubview(configureButton)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(scrollView)
+        
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(contentView)
+        
+        contentView.addSubview(logoImageView)
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(subtitleLabel)
+        contentView.addSubview(descriptionLabel)
+        contentView.addSubview(statusContainerView)
+        statusContainerView.addSubview(statusIconLabel)
+        statusContainerView.addSubview(statusLabel)
+        contentView.addSubview(chatButton)
+        contentView.addSubview(configureButton)
         
         NSLayoutConstraint.activate([
-            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            titleLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -120),
-            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
-            subtitleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            subtitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            subtitleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             
-            descriptionLabel.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 12),
-            descriptionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            descriptionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            descriptionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            logoImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 40),
+            logoImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            logoImageView.widthAnchor.constraint(equalToConstant: 80),
+            logoImageView.heightAnchor.constraint(equalToConstant: 80),
             
-            statusLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 30),
-            statusLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            statusLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            statusLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            titleLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 24),
+            titleLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             
-            chatButton.topAnchor.constraint(equalTo: statusLabel.bottomAnchor, constant: 30),
-            chatButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            chatButton.widthAnchor.constraint(equalToConstant: 280),
-            chatButton.heightAnchor.constraint(equalToConstant: 50),
+            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
+            subtitleLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            subtitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            subtitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             
-            configureButton.topAnchor.constraint(equalTo: chatButton.bottomAnchor, constant: 15),
-            configureButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            configureButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 200)
+            descriptionLabel.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 8),
+            descriptionLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            
+            statusContainerView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 40),
+            statusContainerView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            statusContainerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
+            statusContainerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -32),
+            statusContainerView.heightAnchor.constraint(greaterThanOrEqualToConstant: 80),
+            
+            statusIconLabel.topAnchor.constraint(equalTo: statusContainerView.topAnchor, constant: 16),
+            statusIconLabel.centerXAnchor.constraint(equalTo: statusContainerView.centerXAnchor),
+            
+            statusLabel.topAnchor.constraint(equalTo: statusIconLabel.bottomAnchor, constant: 8),
+            statusLabel.leadingAnchor.constraint(equalTo: statusContainerView.leadingAnchor, constant: 16),
+            statusLabel.trailingAnchor.constraint(equalTo: statusContainerView.trailingAnchor, constant: -16),
+            statusLabel.bottomAnchor.constraint(equalTo: statusContainerView.bottomAnchor, constant: -16),
+            
+            chatButton.topAnchor.constraint(equalTo: statusContainerView.bottomAnchor, constant: 32),
+            chatButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            chatButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
+            chatButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -32),
+            chatButton.heightAnchor.constraint(equalToConstant: 56),
+            
+            configureButton.topAnchor.constraint(equalTo: chatButton.bottomAnchor, constant: 16),
+            configureButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            configureButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
+            configureButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -32),
+            configureButton.heightAnchor.constraint(equalToConstant: 48),
+            configureButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40)
         ])
     }
     
     private func updateAPIStatus() {
         if APIConfiguration.isConfigured {
-            #if canImport(UIKit)
-            statusLabel.text = "✓ API Key Configured (Premium Account)"
+            statusIconLabel.text = "✓"
+            statusLabel.text = "API Key Configured\nPremium Account Active"
             statusLabel.textColor = .systemGreen
-            #else
-            statusLabel.stringValue = "✓ API Key Configured (Premium Account)"
-            statusLabel.textColor = .systemGreen
-            #endif
+            statusContainerView.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.1)
         } else {
-            #if canImport(UIKit)
-            statusLabel.text = "⚠️ API Key Not Configured\nPlease add your NUPI Premium API key"
+            statusIconLabel.text = "⚠️"
+            statusLabel.text = "API Key Required\nConfigure your NUPI Premium key"
             statusLabel.textColor = .systemOrange
-            #else
-            statusLabel.stringValue = "⚠️ API Key Not Configured\nPlease add your NUPI Premium API key"
-            statusLabel.textColor = .systemOrange
-            #endif
+            statusContainerView.backgroundColor = UIColor.systemOrange.withAlphaComponent(0.1)
         }
     }
     
     @objc private func openChat() {
-        #if canImport(UIKit)
         let chatVC = ChatViewController()
         let navController = UINavigationController(rootViewController: chatVC)
         navController.modalPresentationStyle = .fullScreen
         present(navController, animated: true)
-        #else
-        // macOS chat interface would go here
-        let alert = NSAlert()
-        alert.messageText = "Chat with NUPI"
-        alert.informativeText = "The full chat interface is coming soon to macOS! For now, you can use the iOS version."
-        alert.alertStyle = .informational
-        alert.addButton(withTitle: "OK")
-        alert.runModal()
-        #endif
     }
     
     @objc private func configureAPIKey() {
-        #if canImport(UIKit)
         let alert = UIAlertController(title: "Configure API Key", message: "Enter your NUPI Premium API key:", preferredStyle: .alert)
         alert.addTextField { textField in
             textField.placeholder = "API Key"
             textField.text = APIConfiguration.apiKey == "YOUR_API_KEY_HERE" ? "" : APIConfiguration.apiKey
             textField.isSecureTextEntry = true
+            textField.autocapitalizationType = .none
+            textField.autocorrectionType = .no
         }
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         alert.addAction(UIAlertAction(title: "Save", style: .default) { [weak self] _ in
             if let apiKey = alert.textFields?.first?.text, !apiKey.isEmpty {
                 APIConfiguration.setAPIKey(apiKey)
                 self?.updateAPIStatus()
+                
+                // Show success feedback
+                let successAlert = UIAlertController(title: "Success", message: "API key configured successfully!", preferredStyle: .alert)
+                successAlert.addAction(UIAlertAction(title: "OK", style: .default))
+                self?.present(successAlert, animated: true)
             }
         })
         present(alert, animated: true)
-        #else
-        let alert = NSAlert()
-        alert.messageText = "Configure API Key"
-        alert.informativeText = "Enter your NUPI Premium API key:"
-        alert.alertStyle = .informational
-        
-        let textField = NSSecureTextField(frame: NSRect(x: 0, y: 0, width: 300, height: 24))
-        textField.stringValue = APIConfiguration.apiKey == "YOUR_API_KEY_HERE" ? "" : APIConfiguration.apiKey
-        alert.accessoryView = textField
-        
-        alert.addButton(withTitle: "Save")
-        alert.addButton(withTitle: "Cancel")
-        
-        let response = alert.runModal()
-        if response == .alertFirstButtonReturn {
-            let apiKey = textField.stringValue
-            if !apiKey.isEmpty {
-                APIConfiguration.setAPIKey(apiKey)
-                updateAPIStatus()
-            }
-        }
-        #endif
     }
+    
+    #else
+    // macOS implementation
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.wantsLayer = true
+        view.layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
+        
+        let label = NSTextField(labelWithString: "NUPI AI Assistant\n\nFull macOS interface coming soon!\nFor now, please use the iOS version.")
+        label.alignment = .center
+        label.font = NSFont.systemFont(ofSize: 18)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(label)
+        
+        NSLayoutConstraint.activate([
+            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            label.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            label.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 20),
+            label.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -20)
+        ])
+    }
+    #endif
 }

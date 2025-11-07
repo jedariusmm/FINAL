@@ -23,20 +23,22 @@ class ChatViewModel: ObservableObject {
         // Add welcome message
         let welcomeMessage = ChatMessage(
             content: """
-            Welcome to NUPI Assistant! 🚀
+            Hey there! Welcome to NUPI Assistant! 👋✨
             
-            I combine the knowledge of every major AI system:
-            • OpenAI (GPT-4, GPT-3.5)
-            • Anthropic Claude
-            • Google Gemini
-            • Meta LLaMA
-            • Mistral AI
-            • Cohere
-            • Google PaLM
+            I'm so excited you're here! Think of me as your friendly AI companion who has ALL the superpowers. 🦸‍♂️
             
-            Select a specific AI provider or use "All AI Models" to get combined insights from all systems.
+            🌟 **My All-Star Team:**
+            • 🤖 OpenAI (GPT-4 & GPT-3.5) - The brainiacs
+            • 🧠 Anthropic Claude - The deep thinker  
+            • ✨ Google Gemini - The creative one
+            • 🦙 Meta LLaMA - The open-source champion
+            • ⚡ Mistral AI - Speed demon
+            • 🎯 Cohere - Context master
+            • 🌴 Google PaLM - The versatile one
             
-            How can I assist you today?
+            You can chat with any specific AI, or tap "All AI Models" to get a symphony of insights! 🎵
+            
+            So... what amazing thing should we explore together today? 😊
             """,
             isUser: false,
             provider: .combined

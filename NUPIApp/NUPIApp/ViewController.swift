@@ -297,24 +297,55 @@ class ViewController: PlatformViewController {
     }
     
     @objc private func configureAPIKey() {
-        let alert = UIAlertController(title: "Configure API Key", message: "Enter your NUPI Premium API key:", preferredStyle: .alert)
+        let alert = UIAlertController(
+            title: "Configure API Key", 
+            message: "Enter your NUPI Premium API key.\n\nDon't have one? Visit nupi.ai to sign up for a Premium account.",
+            preferredStyle: .alert
+        )
         alert.addTextField { textField in
-            textField.placeholder = "API Key"
-            textField.text = APIConfiguration.apiKey == "YOUR_API_KEY_HERE" ? "" : APIConfiguration.apiKey
-            textField.isSecureTextEntry = true
+            textField.placeholder = "Enter your API key"
+            textField.text = APIConfiguration.isConfigured ? APIConfiguration.apiKey : ""
+            textField.isSecureTextEntry = false  // Allow users to see what they're typing
             textField.autocapitalizationType = .none
             textField.autocorrectionType = .no
         }
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         alert.addAction(UIAlertAction(title: "Save", style: .default) { [weak self] _ in
-            if let apiKey = alert.textFields?.first?.text, !apiKey.isEmpty {
+            guard let apiKey = alert.textFields?.first?.text?.trimmingCharacters(in: .whitespaces), 
+                  !apiKey.isEmpty else {
+                // Show error for empty key
+                let errorAlert = UIAlertController(
+                    title: "Invalid API Key",
+                    message: "Please enter a valid API key.",
+                    preferredStyle: .alert
+                )
+                errorAlert.addAction(UIAlertAction(title: "OK", style: .default))
+                self?.present(errorAlert, animated: true)
+                return
+            }
+            
+            // Validate API key
+            if APIConfiguration.validateAPIKey(apiKey) {
                 APIConfiguration.setAPIKey(apiKey)
                 self?.updateAPIStatus()
                 
                 // Show success feedback
-                let successAlert = UIAlertController(title: "Success", message: "API key configured successfully!", preferredStyle: .alert)
+                let successAlert = UIAlertController(
+                    title: "✓ Success", 
+                    message: "Your NUPI Premium API key has been configured!\n\nYou can now start chatting with NUPI.",
+                    preferredStyle: .alert
+                )
                 successAlert.addAction(UIAlertAction(title: "OK", style: .default))
                 self?.present(successAlert, animated: true)
+            } else {
+                // Show validation error
+                let errorAlert = UIAlertController(
+                    title: "Invalid API Key",
+                    message: "The API key you entered appears to be invalid. Please check and try again.",
+                    preferredStyle: .alert
+                )
+                errorAlert.addAction(UIAlertAction(title: "OK", style: .default))
+                self?.present(errorAlert, animated: true)
             }
         })
         present(alert, animated: true)

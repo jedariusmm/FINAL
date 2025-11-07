@@ -8,25 +8,34 @@
 import Foundation
 
 struct APIConfiguration {
-    /// Your NUPI Premium API Key
-    /// To use the app, add your API key here or set it via Settings
+    /// NUPI Premium API Key Configuration
+    /// For public release: Users must configure their own API key
     static var apiKey: String {
-        // First check if it's set in UserDefaults (from Settings)
+        // Always use UserDefaults for public release
         if let savedKey = UserDefaults.standard.string(forKey: "nupi_api_key"), !savedKey.isEmpty {
             return savedKey
         }
         
-        // Fallback to hardcoded key (for development)
-        // Replace "YOUR_API_KEY_HERE" with your actual NUPI Premium API key
-        return "YOUR_API_KEY_HERE"
+        // No default key for public release - users must configure their own
+        return ""
     }
     
     static var isConfigured: Bool {
-        return !apiKey.isEmpty && apiKey != "YOUR_API_KEY_HERE"
+        return !apiKey.isEmpty
     }
     
     static func setAPIKey(_ key: String) {
         UserDefaults.standard.set(key, forKey: "nupi_api_key")
         UserDefaults.standard.synchronize()
+    }
+    
+    static func clearAPIKey() {
+        UserDefaults.standard.removeObject(forKey: "nupi_api_key")
+        UserDefaults.standard.synchronize()
+    }
+    
+    static func validateAPIKey(_ key: String) -> Bool {
+        // Basic validation: ensure key is not empty and has reasonable length
+        return key.count > 10
     }
 }

@@ -2,9 +2,19 @@
 
 NUPI AI Assistant - Your friendly AI companion for iOS & macOS
 
+## ⚠️ Public Release Ready
+
+This app is prepared for public distribution on the App Store. Before submitting:
+1. **Add your app icon** (see `NUPIApp/ICON_GUIDE.md`)
+2. **Review the checklist** (see `PUBLIC_RELEASE_CHECKLIST.md`)
+3. **Configure App Store metadata**
+4. **Add privacy policy URL**
+
 ## Overview
 
 NUPI AI Assistant is a cross-platform application (iOS and macOS) that provides AI-powered assistance with a warm, human personality. Chat naturally with NUPI to get help with questions, tasks, and more!
+
+**Important**: Users must have their own NUPI Premium API key to use this app. The app does not include a shared API key for security and cost reasons.
 
 ## Features
 
@@ -13,6 +23,7 @@ NUPI AI Assistant is a cross-platform application (iOS and macOS) that provides 
 - Context-aware responses that remember your conversation
 - Emoji support for expressive communication
 - Real-time chat interface
+- Vibrant gradient UI with modern design
 
 ### 💬 Human Personality
 NUPI has been designed with a warm, empathetic personality that:
@@ -22,17 +33,19 @@ NUPI has been designed with a warm, empathetic personality that:
 - Provides encouraging, supportive responses
 - Adapts to your communication style
 
-### 🔐 API Key Configuration
-- Easy API key setup through the app interface
-- Secure storage in UserDefaults
-- Support for NUPI Premium accounts
-- Visual status indicators for configuration state
+### 🔐 API Key Configuration (Required)
+- **Users must configure their own NUPI Premium API key**
+- Easy setup through in-app configuration
+- Secure storage using UserDefaults
+- API key validation
+- Visual status indicators
 
 ### 📱 Cross-Platform
 - **iOS 15.0+**: Full-featured native iOS app
 - **macOS**: Compatible with macOS (Catalyst-ready)
 - Universal app supporting iPhone and iPad
 - Responsive UI with Auto Layout
+- Vibrant gradient themes
 
 ## Project Structure
 

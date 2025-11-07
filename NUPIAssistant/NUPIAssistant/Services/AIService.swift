@@ -192,6 +192,6 @@ class AIService {
     }
     
     private func generateQuickResponse(for message: String) -> String {
-        return Self.quickResponses.randomElement() ?? "I'm here to assist you with accurate and helpful information."
+        return Self.quickResponses.randomElement() ?? Self.quickResponses[0]
     }
 }

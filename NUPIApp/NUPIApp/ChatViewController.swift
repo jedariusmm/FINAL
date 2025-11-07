@@ -21,13 +21,13 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.viewDidLoad()
         title = "NUPI"
         
-        // Vibrant gradient background
+        // Vibrant gradient background - more colorful!
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = view.bounds
         gradientLayer.colors = [
-            UIColor.systemBlue.withAlphaComponent(0.05).cgColor,
-            UIColor.systemPurple.withAlphaComponent(0.05).cgColor,
-            UIColor.systemPink.withAlphaComponent(0.03).cgColor
+            UIColor.systemBlue.withAlphaComponent(0.15).cgColor,
+            UIColor.systemPurple.withAlphaComponent(0.15).cgColor,
+            UIColor.systemPink.withAlphaComponent(0.1).cgColor
         ]
         gradientLayer.locations = [0.0, 0.5, 1.0]
         view.layer.insertSublayer(gradientLayer, at: 0)
@@ -267,12 +267,12 @@ class ChatMessageCell: UITableViewCell {
         selectionStyle = .none
         backgroundColor = .clear
         
-        // Modern bubble with shadow
+        // Modern bubble with enhanced shadow for depth
         bubbleView.layer.cornerRadius = 20
         bubbleView.layer.shadowColor = UIColor.black.cgColor
-        bubbleView.layer.shadowOffset = CGSize(width: 0, height: 1)
-        bubbleView.layer.shadowOpacity = 0.1
-        bubbleView.layer.shadowRadius = 4
+        bubbleView.layer.shadowOffset = CGSize(width: 0, height: 2)
+        bubbleView.layer.shadowOpacity = 0.2
+        bubbleView.layer.shadowRadius = 6
         bubbleView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(bubbleView)
         
@@ -332,6 +332,7 @@ class ChatMessageCell: UITableViewCell {
             }
             
             messageLabel.textColor = .white
+            messageLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
             timeLabel.textAlignment = .right
             timeLabel.textColor = .systemBlue
             
@@ -340,11 +341,11 @@ class ChatMessageCell: UITableViewCell {
             
             timeLabel.trailingAnchor.constraint(equalTo: bubbleView.trailingAnchor).isActive = true
         } else {
-            // Colorful gradient for AI messages
+            // Vibrant gradient for AI messages - much more colorful!
             let gradientLayer = CAGradientLayer()
             gradientLayer.colors = [
-                UIColor.systemTeal.withAlphaComponent(0.2).cgColor,
-                UIColor.systemIndigo.withAlphaComponent(0.2).cgColor
+                UIColor.systemTeal.cgColor,
+                UIColor.systemCyan.cgColor
             ]
             gradientLayer.startPoint = CGPoint(x: 0, y: 0)
             gradientLayer.endPoint = CGPoint(x: 1, y: 1)
@@ -357,9 +358,11 @@ class ChatMessageCell: UITableViewCell {
                 gradientLayer.frame = self.bubbleView.bounds
             }
             
-            messageLabel.textColor = .label
+            // White text for high contrast on colorful bubble
+            messageLabel.textColor = .white
+            messageLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
             timeLabel.textAlignment = .left
-            timeLabel.textColor = .systemIndigo
+            timeLabel.textColor = .systemTeal
             
             bubbleLeadingConstraint = bubbleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16)
             bubbleTrailingConstraint = bubbleView.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -80)

@@ -21,14 +21,15 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.viewDidLoad()
         title = "NUPI"
         
-        // Modern gradient background
+        // Vibrant gradient background
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = view.bounds
         gradientLayer.colors = [
-            UIColor.systemBackground.cgColor,
-            UIColor.systemGray6.withAlphaComponent(0.3).cgColor
+            UIColor.systemBlue.withAlphaComponent(0.05).cgColor,
+            UIColor.systemPurple.withAlphaComponent(0.05).cgColor,
+            UIColor.systemPink.withAlphaComponent(0.03).cgColor
         ]
-        gradientLayer.locations = [0.0, 1.0]
+        gradientLayer.locations = [0.0, 0.5, 1.0]
         view.layer.insertSublayer(gradientLayer, at: 0)
         
         setupModernNavigationBar()
@@ -41,29 +42,32 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     private func setupModernNavigationBar() {
-        // Modern navigation bar styling
+        // Modern navigation bar styling with color
         navigationController?.navigationBar.prefersLargeTitles = false
         
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .systemBackground
+        
+        // Gradient-like effect with subtle color
+        appearance.backgroundColor = UIColor.systemBackground
         appearance.titleTextAttributes = [
             .font: UIFont.systemFont(ofSize: 18, weight: .semibold),
-            .foregroundColor: UIColor.label
+            .foregroundColor: UIColor.systemBlue
         ]
         appearance.shadowColor = .clear
         
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.tintColor = .systemBlue
         
-        // Modern bar button items
+        // Colorful bar button items
         let clearButton = UIBarButtonItem(
-            image: UIImage(systemName: "arrow.counterclockwise"),
+            image: UIImage(systemName: "arrow.counterclockwise.circle.fill"),
             style: .plain,
             target: self,
             action: #selector(clearChat)
         )
-        clearButton.tintColor = .systemBlue
+        clearButton.tintColor = .systemPurple
         navigationItem.rightBarButtonItem = clearButton
         
         let closeButton = UIBarButtonItem(
@@ -72,7 +76,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             target: self,
             action: #selector(dismissChat)
         )
-        closeButton.tintColor = .systemGray
+        closeButton.tintColor = .systemPink
         navigationItem.leftBarButtonItem = closeButton
     }
     
@@ -114,9 +118,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         inputTextField.translatesAutoresizingMaskIntoConstraints = false
         inputContainerView.addSubview(inputTextField)
         
-        // Modern send button with icon
+        // Colorful send button with gradient icon
         sendButton.setImage(UIImage(systemName: "arrow.up.circle.fill"), for: .normal)
-        sendButton.tintColor = .systemBlue
+        sendButton.tintColor = .systemPurple
         sendButton.contentVerticalAlignment = .fill
         sendButton.contentHorizontalAlignment = .fill
         sendButton.addTarget(self, action: #selector(sendMessage), for: .touchUpInside)
@@ -310,20 +314,52 @@ class ChatMessageCell: UITableViewCell {
         bubbleTrailingConstraint?.isActive = false
         
         if message.role == "user" {
-            // Modern blue gradient for user messages
-            bubbleView.backgroundColor = .systemBlue
+            // Vibrant gradient for user messages
+            let gradientLayer = CAGradientLayer()
+            gradientLayer.colors = [
+                UIColor.systemBlue.cgColor,
+                UIColor.systemPurple.cgColor
+            ]
+            gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+            gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+            gradientLayer.cornerRadius = 20
+            
+            bubbleView.layer.sublayers?.removeAll(where: { $0 is CAGradientLayer })
+            bubbleView.layer.insertSublayer(gradientLayer, at: 0)
+            
+            DispatchQueue.main.async {
+                gradientLayer.frame = self.bubbleView.bounds
+            }
+            
             messageLabel.textColor = .white
             timeLabel.textAlignment = .right
+            timeLabel.textColor = .systemBlue
             
             bubbleTrailingConstraint = bubbleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
             bubbleLeadingConstraint = bubbleView.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor, constant: 80)
             
             timeLabel.trailingAnchor.constraint(equalTo: bubbleView.trailingAnchor).isActive = true
         } else {
-            // Sophisticated gray for AI messages
-            bubbleView.backgroundColor = .systemGray5
+            // Colorful gradient for AI messages
+            let gradientLayer = CAGradientLayer()
+            gradientLayer.colors = [
+                UIColor.systemTeal.withAlphaComponent(0.2).cgColor,
+                UIColor.systemIndigo.withAlphaComponent(0.2).cgColor
+            ]
+            gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+            gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+            gradientLayer.cornerRadius = 20
+            
+            bubbleView.layer.sublayers?.removeAll(where: { $0 is CAGradientLayer })
+            bubbleView.layer.insertSublayer(gradientLayer, at: 0)
+            
+            DispatchQueue.main.async {
+                gradientLayer.frame = self.bubbleView.bounds
+            }
+            
             messageLabel.textColor = .label
             timeLabel.textAlignment = .left
+            timeLabel.textColor = .systemIndigo
             
             bubbleLeadingConstraint = bubbleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16)
             bubbleTrailingConstraint = bubbleView.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -80)

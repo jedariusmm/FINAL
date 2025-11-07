@@ -26,7 +26,7 @@ class AIService {
     /// Sends a message to all AI providers and combines their responses
     func sendMessageToAll(_ message: String) async throws -> String {
         // Simulate querying multiple AI models
-        try await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
+        try await Task.sleep(nanoseconds: 1_500_000_000) // 1.5 seconds
         
         let responses = [
             "🤖 GPT-4: " + generateSmartResponse(for: message),
@@ -105,6 +105,6 @@ class AIService {
             "Great question! Here's what I can tell you about that.",
             "I'm here to assist you with accurate and helpful information."
         ]
-        return responses.randomElement() ?? responses[0]
+        return responses.randomElement() ?? "I'm here to assist you with accurate and helpful information."
     }
 }

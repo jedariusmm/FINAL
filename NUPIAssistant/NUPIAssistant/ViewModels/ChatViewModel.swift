@@ -87,7 +87,8 @@ class ChatViewModel: ObservableObject {
     
     /// Clears all messages except the welcome message
     func clearChat() {
-        let welcomeMessage = messages.first
+        // Keep only the welcome message (identified by being the first non-user message)
+        let welcomeMessage = messages.first(where: { !$0.isUser })
         messages.removeAll()
         if let welcome = welcomeMessage {
             messages.append(welcome)

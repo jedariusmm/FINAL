@@ -5,6 +5,7 @@
 //  Created for NUPI AI Assistant
 //
 
+#if canImport(UIKit)
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -46,3 +47,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 }
+#endif

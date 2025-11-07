@@ -5,6 +5,7 @@
 //  Created for NUPI AI Assistant
 //
 
+#if canImport(UIKit)
 import UIKit
 
 @main
@@ -29,3 +30,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 }
+
+#elseif canImport(AppKit)
+import AppKit
+
+@main
+class AppDelegate: NSObject, NSApplicationDelegate {
+    
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        // Override point for customization after application launch.
+    }
+    
+    func applicationWillTerminate(_ notification: Notification) {
+        // Insert code here to tear down your application
+    }
+    
+    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
+        return true
+    }
+}
+#endif
